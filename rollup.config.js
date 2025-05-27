@@ -34,6 +34,8 @@ export default {
   plugins: [
     peerDepsExternal(),
     typescript({
+      clean: true,
+      useTsconfigDeclarationDir: true,
       typescript: ttypescript,
       tsconfig: "./tsconfig.json",
     }),

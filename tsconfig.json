@@ -3,10 +3,14 @@
     "module": "ESNext",
     "target": "ES6",
     "lib": ["ESNext"],
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "moduleResolution": "node",
 		"declaration": true,
+		"declarationDir": "./dist/types",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
   },
-  "exclude": ["demo", "node_modules", "dist"]
+  "exclude": ["demo", "**node_modules", "dist", "scripts"]
 }
