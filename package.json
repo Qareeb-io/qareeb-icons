@@ -1,13 +1,14 @@
 {
   "name": "@qareeb-io/icons",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "Qareeb.io",
     "email": "sifedine.habou@qareeb.io"
   },
   "exports": {
     "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js"
+    "require": "./dist/cjs/index.js",
+    "types": "./dist/types/index.d.ts"
   },
   "publishConfig": {
     "access": "public"
