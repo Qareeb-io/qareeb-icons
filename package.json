@@ -1,6 +1,6 @@
 {
   "name": "@qareeb-io/icons",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": {
     "name": "Qareeb.io",
     "email": "sifedine.habou@qareeb.io"
@@ -36,6 +36,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "peerDependencies": {
+    "react": ">=16.3"
+  },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.27.3",
     "@babel/preset-env": "^7.27.2",
