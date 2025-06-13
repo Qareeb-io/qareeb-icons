@@ -5,8 +5,8 @@ import { JSDOM } from "jsdom";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ICONS_DIR = path.join(__dirname, "assets/icons");
-const OUTPUT_FILE = path.join(__dirname, "src/iconDefinitions.ts");
+const ICONS_DIR = path.join(__dirname, "../assets/icons");
+const OUTPUT_FILE = path.join(__dirname, "../src/iconDefinitions.ts");
 
 function toUnicode(index: number): string {
   return "e" + (index + 1).toString(16).padStart(3, "0");

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconDefinition } from "./iconDefinitions";
+import { IconDefinition } from "./oldIconDefinitions";
 import { Size, SizeMap } from "./common";
 
 interface QareebIconProps extends React.SVGProps<SVGSVGElement> {
