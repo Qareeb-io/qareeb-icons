@@ -6,18 +6,12 @@ interface QareebIconProps extends React.SVGProps<SVGSVGElement> {
   icon: IconDefinition;
   size?: number | Size;
   viewBox?: string;
-  className?: string;
   style?: React.CSSProperties;
   xmlns?: string;
   "data-icon"?: string;
 }
 
-const QareebIcon: FC<QareebIconProps> = ({
-  icon,
-  className = "",
-  size,
-  ...props
-}) => {
+const QareebIcon: FC<QareebIconProps> = ({ icon, size, ...props }) => {
   const [w, h, , , paths, attrs] = icon.icon;
 
   if (size) {
