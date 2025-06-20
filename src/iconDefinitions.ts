@@ -12792,8 +12792,8 @@ export const qaMenu05: IconDefinition = {
 ]
 };
 
-export const qaMesage2Up: IconDefinition = {
-  name: 'qa-mesage-2-up',
+export const qaMessage2Up: IconDefinition = {
+  name: 'qa-message-2-up',
   icon: [
   16,
   16,
