@@ -15,7 +15,7 @@ const QareebIcon: FC<QareebIconProps> = ({ icon, size, ...props }) => {
   const [w, h, , , paths, attrs] = icon.icon;
 
   if (size) {
-    let newSize = 0;
+    // let newSize = 0;
 
     if (typeof size === "number") size = size;
     else size = SizeMap[size] || 0;

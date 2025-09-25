@@ -1,14 +1,26 @@
 {
   "name": "@qareeb-io/icons",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "author": {
     "name": "Qareeb.io",
     "email": "sifedine.habou@qareeb.io"
   },
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js",
-    "types": "./dist/types/index.d.ts"
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./qfarm": {
+      "import": "./dist/esm/qfarm/index.js",
+      "require": "./dist/cjs/qfarm/index.js",
+      "types": "./dist/types/qfarm/index.d.ts"
+    },
+    "./wizabot": {
+      "import": "./dist/esm/wizabot/index.js",
+      "require": "./dist/cjs/wizabot/index.js",
+      "types": "./dist/types/wizabot/index.d.ts"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -59,6 +71,8 @@
     "@types/yargs": "^17.0.32",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "camelcase": "^8.0.0",
+    "commander": "^14.0.1",
+    "inquirer": "^12.9.6",
     "jsdom": "^26.1.0",
     "react": "^18.3.1",
     "rollup": "^2.79.1",

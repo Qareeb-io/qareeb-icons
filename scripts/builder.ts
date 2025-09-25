@@ -2,11 +2,44 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { JSDOM } from "jsdom";
+import inquirer from "inquirer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ICONS_DIR = path.join(__dirname, "../assets/icons");
-const OUTPUT_FILE = path.join(__dirname, "../src/iconDefinitions.ts");
+
+const paths = [
+  {
+    name: "wizabot",
+    inputDir: path.join(__dirname, "../assets/icons/wizabot"),
+    outputFile: path.join(__dirname, "../src/wizabot/iconDefinitions.ts"),
+  },
+  {
+    name: "qfarm",
+    inputDir: path.join(__dirname, "../assets/icons/qfarm"),
+    outputFile: path.join(__dirname, "../src/qfarm/iconDefinitions.ts"),
+  },
+];
+
+const types = paths.map((p) => p.name);
+const answers = await inquirer.prompt([
+  {
+    type: "list",
+    name: "type",
+    message: "Select icon set to build:",
+    choices: types,
+  },
+]);
+
+const selected = paths.find((p) => p.name === answers.type);
+const INPUT_DIR = selected?.inputDir;
+const OUTPUT_FILE = selected?.outputFile;
+
+if (INPUT_DIR && OUTPUT_FILE) {
+  generateIconDefinitions();
+} else {
+  console.error(`Invalid icon set type. Use ${types.join(", ")}`);
+  process.exit(1);
+}
 
 function toUnicode(index: number): string {
   return "e" + (index + 1).toString(16).padStart(3, "0");
@@ -70,7 +103,9 @@ function snakeToCamel(input: string): string {
 }
 
 function generateIconDefinitions() {
-  const files = fs.readdirSync(ICONS_DIR).filter((f) => f.endsWith(".svg"));
+  if (!INPUT_DIR || !OUTPUT_FILE) return;
+
+  const files = fs.readdirSync(INPUT_DIR).filter((f) => f.endsWith(".svg"));
   const lines: string[] = [
     `// auto-generated icon definitions`,
     `export type IconDefinition = {`,
@@ -81,7 +116,7 @@ function generateIconDefinitions() {
   ];
 
   files.forEach((file, i) => {
-    const svg = fs.readFileSync(path.join(ICONS_DIR, file), "utf-8");
+    const svg = fs.readFileSync(path.join(INPUT_DIR, file), "utf-8");
     const [w, h, ligatures, d, attrs] = extractIconData(svg);
     const name = path.basename(file, ".svg");
     const unicode = toUnicode(i);
@@ -101,5 +136,3 @@ function generateIconDefinitions() {
 
   fs.writeFileSync(OUTPUT_FILE, lines.join("\n"), "utf-8");
 }
-
-generateIconDefinitions();

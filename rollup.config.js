@@ -9,29 +9,31 @@ import ttypescript from "ttypescript";
 import pkg from "./package.json";
 
 export default {
-  input: "src/index.ts",
+  input: {
+    index: "src/index.ts",
+    "qfarm/index": "src/qfarm/index.ts",
+    "wizabot/index": "src/wizabot/index.ts",
+  },
   output: [
     {
       format: "cjs",
       dir: "dist/cjs",
-      preserveModules: true,
-      preserveModulesRoot: "src",
       exports: "named",
+      entryFileNames: "[name].js"
     },
     {
       format: "es",
       dir: "dist/esm",
-      preserveModules: true,
-      preserveModulesRoot: "src",
       exports: "named",
+      entryFileNames: "[name].js"
     },
   ],
   external: [
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.peerDependencies || {}),
-    "./src",
   ],
   plugins: [
+    del({ targets: "dist/*" }),
     peerDepsExternal(),
     typescript({
       clean: true,
@@ -47,6 +49,5 @@ export default {
       extensions: [".ts", ".tsx"],
     }),
     terser(),
-    del({ targets: "dist/*" }),
   ],
 };
