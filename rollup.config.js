@@ -13,6 +13,7 @@ export default {
     index: "src/index.ts",
     "qfarm/index": "src/qfarm/index.ts",
     "wizabot/index": "src/wizabot/index.ts",
+    "qvision/index": "src/qvision/index.ts",
   },
   output: [
     {
