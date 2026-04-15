@@ -20,6 +20,11 @@
       "import": "./dist/esm/wizabot/index.js",
       "require": "./dist/cjs/wizabot/index.js",
       "types": "./dist/types/wizabot/index.d.ts"
+    },
+    "./qvision": {
+      "import": "./dist/esm/qvision/index.js",
+      "require": "./dist/cjs/qvision/index.js",
+      "types": "./dist/types/qvision/index.d.ts"
     }
   },
   "publishConfig": {
