@@ -18,6 +18,11 @@ const paths = [
     inputDir: path.join(__dirname, "../assets/icons/qfarm"),
     outputFile: path.join(__dirname, "../src/qfarm/iconDefinitions.ts"),
   },
+  {
+    name: "qvision",
+    inputDir: path.join(__dirname, "../assets/icons/qvision"),
+    outputFile: path.join(__dirname, "../src/qvision/iconDefinitions.ts"),
+  },
 ];
 
 const types = paths.map((p) => p.name);
@@ -46,16 +51,16 @@ function toUnicode(index: number): string {
 }
 
 function extractIconData(
-  svgContent: string
+  svgContent: string,
 ): [number, number, string[], string | string[], Record<string, string>] {
   const dom = new JSDOM(svgContent);
   const svg = dom.window.document.querySelector("svg")!;
   const viewBox = svg.getAttribute("viewBox")?.split(/\s+/).map(Number) || [];
   const width = parseFloat(
-    svg.getAttribute("width") ?? String(viewBox[2] || 0)
+    svg.getAttribute("width") ?? String(viewBox[2] || 0),
   );
   const height = parseFloat(
-    svg.getAttribute("height") ?? String(viewBox[3] || 0)
+    svg.getAttribute("height") ?? String(viewBox[3] || 0),
   );
 
   const paths = Array.from(svg.querySelectorAll("path"));
@@ -97,7 +102,7 @@ function snakeToCamel(input: string): string {
     .map((s, i) =>
       i === 0
         ? s.toLowerCase()
-        : s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+        : s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(),
     )
     .join("");
 }
@@ -117,20 +122,28 @@ function generateIconDefinitions() {
 
   files.forEach((file, i) => {
     const svg = fs.readFileSync(path.join(INPUT_DIR, file), "utf-8");
+
+
+    // if (file.endsWith('.png')) {
+    //   // delete the png file
+    //   fs.unlinkSync(path.join(INPUT_DIR, file));
+    //   return;
+    // }
+
     const [w, h, ligatures, d, attrs] = extractIconData(svg);
     const name = path.basename(file, ".svg");
     const unicode = toUnicode(i);
     const iconArr = JSON.stringify(
       [w, h, ligatures, unicode, d, attrs],
       null,
-      2
+      2,
     );
     lines.push(
       `export const qa${snakeToPascal(name)}: IconDefinition = {`,
       `  name: 'qa-${name}',`,
       `  icon: ${iconArr}`,
       `};`,
-      ``
+      ``,
     );
   });
 
