@@ -63,29 +63,64 @@ function extractIconData(
     svg.getAttribute("height") ?? String(viewBox[3] || 0),
   );
 
-  const paths = Array.from(svg.querySelectorAll("path"));
-  const pathData = paths
-    .map((p) => p.getAttribute("d")!.trim())
-    .filter(Boolean);
+  const pathData: string[] = [];
+
+  // 1. Extract existing paths
+  svg.querySelectorAll("path").forEach((p) => {
+    const d = p.getAttribute("d")?.trim();
+    if (d) pathData.push(d);
+  });
+
+  // 2. Convert polygons to paths
+  svg.querySelectorAll("polygon").forEach((p) => {
+    const points = p.getAttribute("points")?.trim();
+    if (points) {
+      // Converts "17,13 19,13 19,15" into "M17,13 L19,13 L19,15 Z"
+      const d = "M" + points.split(/\s+/).join(" L") + " Z";
+      pathData.push(d);
+    }
+  });
+
+  // 3. Convert rects to paths (ignoring invisible bounding boxes)
+  svg.querySelectorAll("rect").forEach((r) => {
+    if (r.getAttribute("fill") === "none") return; // Skip transparent bounding boxes
+    const x = parseFloat(r.getAttribute("x") || "0");
+    const y = parseFloat(r.getAttribute("y") || "0");
+    const w = parseFloat(r.getAttribute("width") || "0");
+    const h = parseFloat(r.getAttribute("height") || "0");
+
+    // Converts rect to path coordinates
+    const d = `M${x},${y} H${x + w} V${y + h} H${x} Z`;
+    pathData.push(d);
+  });
+
   const data = pathData.length === 1 ? pathData[0] : pathData;
 
-  const first = paths[0];
   const attrs: Record<string, string> = {};
-  const names = [
-    "stroke",
-    "fill",
-    "stroke-width",
-    "stroke-linecap",
-    "stroke-linejoin",
-  ];
-  for (const n of names) {
-    const v = first.getAttribute(n);
-    if (v != null) {
-      attrs[snakeToCamel(n)] =
-        n === "stroke" || n === "fill" ? "currentColor" : v;
+  const firstShape = svg.querySelector(
+    "path, polygon, rect:not([fill='none'])",
+  );
+
+  if (firstShape) {
+    const names = [
+      "stroke",
+      "fill",
+      "stroke-width",
+      "stroke-linecap",
+      "stroke-linejoin",
+    ];
+    for (const n of names) {
+      const v = firstShape.getAttribute(n);
+      if (v != null) {
+        attrs[snakeToCamel(n)] =
+          n === "stroke" || n === "fill" ? "currentColor" : v;
+      }
     }
   }
 
+  dom.window.close();
+
+  
   return [width, height, [], data, attrs];
 }
 
@@ -121,30 +156,34 @@ function generateIconDefinitions() {
   ];
 
   files.forEach((file, i) => {
-    const svg = fs.readFileSync(path.join(INPUT_DIR, file), "utf-8");
+    try {
+      const svg = fs.readFileSync(path.join(INPUT_DIR, file), "utf-8");
 
+      // if (file.endsWith('.png')) {
+      //   // delete the png file
+      //   fs.unlinkSync(path.join(INPUT_DIR, file));
+      //   return;
+      // }
 
-    // if (file.endsWith('.png')) {
-    //   // delete the png file
-    //   fs.unlinkSync(path.join(INPUT_DIR, file));
-    //   return;
-    // }
-
-    const [w, h, ligatures, d, attrs] = extractIconData(svg);
-    const name = path.basename(file, ".svg");
-    const unicode = toUnicode(i);
-    const iconArr = JSON.stringify(
-      [w, h, ligatures, unicode, d, attrs],
-      null,
-      2,
-    );
-    lines.push(
-      `export const qa${snakeToPascal(name)}: IconDefinition = {`,
-      `  name: 'qa-${name}',`,
-      `  icon: ${iconArr}`,
-      `};`,
-      ``,
-    );
+      const [w, h, ligatures, d, attrs] = extractIconData(svg);
+      const name = path.basename(file, ".svg");
+      const unicode = toUnicode(i);
+      const iconArr = JSON.stringify(
+        [w, h, ligatures, unicode, d, attrs],
+        null,
+        2,
+      );
+      lines.push(
+        `export const qa${snakeToPascal(name)}: IconDefinition = {`,
+        `  name: 'qa-${name}',`,
+        `  icon: ${iconArr}`,
+        `};`,
+        ``,
+      );
+    } catch (error) {
+      console.error("Failed:", file);
+      throw error;
+    }
   });
 
   fs.writeFileSync(OUTPUT_FILE, lines.join("\n"), "utf-8");
